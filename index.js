@@ -1,4 +1,4 @@
-const { parse } = require("csv-parser");
+const { parse } = require("csv-parse");
 const fs = require("fs");
 
 const results = [];
@@ -7,6 +7,13 @@ const results = [];
 //Push the buffer data into the result array
 //Even Emitter
 fs.createReadStream("./kepler_data.csv")
+  //Connect two streams
+  .pipe(
+    parse({
+      comment: "#",
+      columns: true,
+    })
+  )
   .on("data", (data) => {
     results.push(data);
   })
@@ -14,6 +21,6 @@ fs.createReadStream("./kepler_data.csv")
     console.log(err);
   })
   .on("end", () => {
-    console.log(results);
+    console.log(results.length);
     console.log("done");
   });
